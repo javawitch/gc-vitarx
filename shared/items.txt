@@ -1,0 +1,18 @@
+['prescription_pad'] = {
+    label = 'Prescription Pad',
+    weight = 500,
+    stack = false,
+    consume = 0,
+    client = {
+        usetime = 2000,
+        anim = {
+            dict = 'missheistdockssetup1clipboard@base',
+            clip = 'base'
+        },
+        prop = {
+            model = `prop_notepad_01`,
+            pos = vec3(0.1, 0.02, 0.05),
+            rot = vec3(10.0, 0.0, 0.0)
+        }
+    }
+}
