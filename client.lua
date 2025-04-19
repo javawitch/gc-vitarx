@@ -1,5 +1,5 @@
-RegisterNetEvent('ox_inventory.examples:usePrescriptionPad', function()
-    ESX.TriggerServerCallback('gitcute:canUsePrescriptionPad', function(canUse)
+RegisterNetEvent('gitcute:openPrescriptionPad', function()
+        ESX.TriggerServerCallback('gitcute:canUsePrescriptionPad', function(canUse)
         if not canUse then
             lib.notify({title = 'Access Denied', description = 'Only certified doctors can use this pad.', type = 'error'})
             return
