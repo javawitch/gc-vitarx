@@ -1,10 +1,11 @@
 RegisterNetEvent('gitcute:openPrescriptionPad', function()
-        ESX.TriggerServerCallback('gitcute:canUsePrescriptionPad', function(canUse)
+    ESX.TriggerServerCallback('gitcute:canUsePrescriptionPad', function(canUse)
         if not canUse then
-            lib.notify({title = 'Access Denied', description = 'Only certified doctors can use this pad.', type = 'error'})
+            lib.notify({ title = 'Access Denied', description = 'Only certified doctors can use this pad.', type = 'error' })
             return
         end
 
+        -- (the rest of your inputDialog logic stays the same)
         local playerOptions = {}
         for _, id in ipairs(GetActivePlayers()) do
             local serverId = GetPlayerServerId(id)
@@ -22,9 +23,9 @@ RegisterNetEvent('gitcute:openPrescriptionPad', function()
         if not input then return end
 
         local patientServerId = tonumber(input[1])
-        local ailment = input[2]
-        local medication = input[3]
-        local instructions = input[4]
+        local ailment          = input[2]
+        local medication       = input[3]
+        local instructions     = input[4]
 
         TriggerServerEvent('gitcute:writeDetailedPrescription', patientServerId, ailment, medication, instructions)
     end)
