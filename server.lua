@@ -1,8 +1,8 @@
 ESX.RegisterUsableItem('prescription_pad', function(source)
-    TriggerClientEvent('gitcute:openPrescriptionPad', source)
+    TriggerClientEvent('gc-vitarx:openPrescriptionPad', source)
 end)
 
-ESX.RegisterServerCallback('gitcute:canUsePrescriptionPad', function(src, cb)
+ESX.RegisterServerCallback('gc-vitarx:canUsePrescriptionPad', function(src, cb)
     local xPlayer = ESX.GetPlayerFromId(src)
     cb(Config.DoctorJobs[xPlayer.job.name] == true)
 end)
@@ -56,7 +56,7 @@ RegisterCommand('prescriptions', function(source)
     end)
 end)
 
-RegisterNetEvent('gitcute:writeDetailedPrescription', function(targetId, ailment, medication, instructions)
+RegisterNetEvent('gc-vitarx:writeDetailedPrescription', function(targetId, ailment, medication, instructions)
     local src = source
     local xPlayer = ESX.GetPlayerFromId(src)
     if not Config.DoctorJobs[xPlayer.job.name] then return DropPlayer(src, 'Unauthorized') end
@@ -91,7 +91,7 @@ RegisterNetEvent('gitcute:writeDetailedPrescription', function(targetId, ailment
 end)
 
 -- count on‑duty pharmacists
-ESX.RegisterServerCallback('gitcute:getPharmacistCount', function(src, cb)
+ESX.RegisterServerCallback('gc-vitarx:getPharmacistCount', function(src, cb)
     local count = 0
     for _, pid in ipairs(ESX.GetPlayers()) do
       local xP = ESX.GetPlayerFromId(pid)
@@ -101,7 +101,7 @@ ESX.RegisterServerCallback('gitcute:getPharmacistCount', function(src, cb)
   end)
   
   -- fetch *all* patient prescriptions (we’ll filter by status client‑side)
-  ESX.RegisterServerCallback('gitcute:getPatientPrescriptions', function(src, cb)
+  ESX.RegisterServerCallback('gc-vitarx:getPatientPrescriptions', function(src, cb)
     local xP = ESX.GetPlayerFromId(src)
     MySQL.Async.fetchAll('SELECT * FROM user_prescriptions WHERE citizenid = ?', {
       xP.getIdentifier()
@@ -109,7 +109,7 @@ ESX.RegisterServerCallback('gitcute:getPharmacistCount', function(src, cb)
   end)
   
   -- drop‑off (written → pending)
-  RegisterNetEvent('gitcute:dropOffPrescription', function(prescriptionId)
+  RegisterNetEvent('gc-vitarx:dropOffPrescription', function(prescriptionId)
     local src = source
     local cid = ESX.GetPlayerFromId(src).getIdentifier()
     MySQL.Async.execute([[
@@ -121,7 +121,7 @@ ESX.RegisterServerCallback('gitcute:getPharmacistCount', function(src, cb)
   end)
   
   -- pick‑up (filled → collected + give item)
-  RegisterNetEvent('gitcute:pickUpPrescription', function(prescriptionId)
+  RegisterNetEvent('gc-vitarx:pickUpPrescription', function(prescriptionId)
     local src = source
     local xP  = ESX.GetPlayerFromId(src)
     MySQL.Async.fetchAll([[
@@ -140,37 +140,7 @@ ESX.RegisterServerCallback('gitcute:getPharmacistCount', function(src, cb)
       TriggerClientEvent('esx:showNotification', src, 'You picked up ' .. rx.medication)
     end)
   end)
-
-  RegisterNetEvent('gitcute:fillPrescription', function(prescriptionId)
-    local src     = source
-    local xPlayer = ESX.GetPlayerFromId(src)
-    
-    -- ensure only pharmacists can fill
-    if not Config.PharmacistJobs[xPlayer.job.name] then
-        return TriggerClientEvent('esx:showNotification', src, 'You are not authorized to fill prescriptions.')
-    end
-
-    local filledAt = os.time()
-    local filler  = xPlayer.getName()
-
-    MySQL.Async.execute([[
-        UPDATE user_prescriptions
-        SET status    = 'filled',
-            filled_by = ?,
-            filled_at = ?
-        WHERE id = ? AND status = 'pending'
-    ]], {
-        filler,
-        filledAt,
-        prescriptionId
-    }, function(rowsChanged)
-        if rowsChanged > 0 then
-            TriggerClientEvent('esx:showNotification', src, 'Prescription marked as filled.')
-        else
-            TriggerClientEvent('esx:showNotification', src, 'Unable to fill: invalid ID or already filled.')
-        end
-    end)
-end)
+  
 
 local cleanupThread
 AddEventHandler('onResourceStop', function(resourceName)

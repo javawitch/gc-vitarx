@@ -11,6 +11,16 @@ Config.PrescriptionItems = {
 
 Config.PharmacistJobs = { ['pharmacist'] = true }
 
+-- pharmacy ped & job settings
+Config.PharmacistJobs = { ['pharmacist'] = true }
+
+Config.Pharmacy = {
+  coords     = vector3(355.8, -594.8, 28.8),   -- set your pharmacy location
+  heading    = 160.0,
+  pedModel   = 's_m_m_doctor_01',
+  pedScenario= 'WORLD_HUMAN_CLIPBOARD'
+}
+
 -- Medicines pharmacists can dispense without a doctor’s pad
 Config.PharmacyMedicines = {
     { value = 'aspirin',         label = 'Aspirin'         },

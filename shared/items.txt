@@ -1,3 +1,4 @@
+-- VitaRx Items
 ['prescription_pad'] = {
     label = 'Prescription Pad',
     weight = 500,
@@ -15,4 +16,97 @@
             rot = vec3(10.0, 0.0, 0.0)
         }
     }
-}
+},
+['aspirin'] = {
+    label   = 'Aspirin',
+    weight  = 50,
+    stack   = true,
+    consume = 1,
+    client = {
+        anim = { dict = 'mp_satisfied', clip = 'ig_5_sit_loop' },
+        prop = { model = `prop_bottle_med2`, pos = vec3(0.0, 0.0, 0.0), rot = vec3(0,0,0) },
+        usetime = 1500,
+        status = {}, -- no special effects
+    }
+},
+
+['cough_syrup'] = {
+    label   = 'Cough Syrup',
+    weight  = 100,
+    stack   = true,
+    consume = 1,
+    client = {
+        anim = { dict = 'mp_satisfy', clip = 'kneel_plant' },
+        prop = { model = `prop_plas_box_01`, pos = vec3(0,0,0), rot = vec3(0,0,0) },
+        usetime = 2500,
+        status = {}, -- could add slight throat‑soothe effect if you want
+    }
+},
+['ibuprofen'] = {
+    label   = 'Ibuprofen',
+    weight  = 60,
+    stack   = true,
+    consume = 1,
+    client = {
+        anim    = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+        prop    = {
+            model = `prop_bottle_med3`,
+            pos   = vec3(0.0, 0.0, 0.02),
+            rot   = vec3(0.0, 0.0, 0.0)
+        },
+        usetime = 2000,
+        status  = {}
+    }
+},
+
+['antihistamine'] = {
+    label   = 'Antihistamine',
+    weight  = 75,
+    stack   = true,
+    consume = 1,
+    client = {
+        anim    = { dict = 'mp_satisfied', clip = 'ig_5_sit_loop' },
+        prop    = {
+            model = `prop_pill_bottle_01`,
+            pos   = vec3(0.0, 0.0, 0.02),
+            rot   = vec3(0.0, 0.0, 0.0)
+        },
+        usetime = 1500,
+        status  = {}
+    }
+},
+
+['antacid'] = {
+    label   = 'Antacid',
+    weight  = 80,
+    stack   = true,
+    consume = 1,
+    client = {
+        anim    = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+        prop    = {
+            model = `prop_ld_health_pack`,
+            pos   = vec3(0.0, 0.0, 0.02),
+            rot   = vec3(0.0, 0.0, 0.0)
+        },
+        usetime = 2000,
+        status  = {}
+    }
+},
+
+['laxative'] = {
+    label   = 'Laxative',
+    weight  = 70,
+    stack   = true,
+    consume = 1,
+    client = {
+        anim    = { dict = 'mp_player_intdrink', clip = 'loop_bottle' },
+        prop    = {
+            model = `prop_ld_flow_bottle`,
+            pos   = vec3(0.0, 0.0, 0.02),
+            rot   = vec3(0.0, 0.0, 0.0)
+        },
+        usetime = 2000,
+        status  = {}
+    }
+},
+
