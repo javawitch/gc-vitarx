@@ -89,6 +89,58 @@ RegisterNetEvent('gitcute:writeDetailedPrescription', function(targetId, ailment
     end)
 end)
 
+-- count on‑duty pharmacists
+ESX.RegisterServerCallback('gitcute:getPharmacistCount', function(src, cb)
+    local count = 0
+    for _, pid in ipairs(ESX.GetPlayers()) do
+      local xP = ESX.GetPlayerFromId(pid)
+      if Config.PharmacistJobs[xP.job.name] then count = count + 1 end
+    end
+    cb(count)
+  end)
+  
+  -- fetch *all* patient prescriptions (we’ll filter by status client‑side)
+  ESX.RegisterServerCallback('gitcute:getPatientPrescriptions', function(src, cb)
+    local xP = ESX.GetPlayerFromId(src)
+    MySQL.Async.fetchAll('SELECT * FROM user_prescriptions WHERE citizenid = ?', {
+      xP.getIdentifier()
+    }, cb)
+  end)
+  
+  -- drop‑off (written → pending)
+  RegisterNetEvent('gitcute:dropOffPrescription', function(prescriptionId)
+    local src = source
+    local cid = ESX.GetPlayerFromId(src).getIdentifier()
+    MySQL.Async.execute([[
+      UPDATE user_prescriptions
+      SET status = 'pending'
+      WHERE id = ? AND citizenid = ?
+    ]], { prescriptionId, cid })
+    TriggerClientEvent('esx:showNotification', src, 'Prescription dropped off.')
+  end)
+  
+  -- pick‑up (filled → collected + give item)
+  RegisterNetEvent('gitcute:pickUpPrescription', function(prescriptionId)
+    local src = source
+    local xP  = ESX.GetPlayerFromId(src)
+    MySQL.Async.fetchAll([[
+      SELECT * FROM user_prescriptions
+      WHERE id = ? AND citizenid = ? AND status = 'filled'
+    ]], { prescriptionId, xP.getIdentifier() }, function(results)
+      if #results == 0 then
+        return TriggerClientEvent('esx:showNotification', src, 'No filled prescription found.')
+      end
+  
+      local rx = results[1]
+      -- give the medicine
+      exports.ox_inventory:AddItem(src, rx.medication, 1, { instructions = rx.instructions })
+      -- mark collected
+      MySQL.Async.execute('UPDATE user_prescriptions SET status = \'collected\' WHERE id = ?', { prescriptionId })
+      TriggerClientEvent('esx:showNotification', src, 'You picked up ' .. rx.medication)
+    end)
+  end)
+  
+
 local cleanupThread
 AddEventHandler('onResourceStop', function(resourceName)
     if resourceName == GetCurrentResourceName() and cleanupThread then
