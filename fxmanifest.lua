@@ -1,8 +1,8 @@
 fx_version 'cerulean'
 game 'gta5'
 
-description 'Prescription System for ESX with ox_inventory'
-author 'Git Cute - Jocelyn Harper'
+description 'Prescription and Addiction System for ESX with ox_inventory'
+author 'Git Cute - Java'
 version '1.0.0'
 
 shared_script 'config.lua'

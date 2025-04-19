@@ -9,6 +9,18 @@ Config.PrescriptionItems = {
     { value = 'protein_powder', label = 'Protein Powder' }
 }
 
+Config.PharmacistJobs = { ['pharmacist'] = true }
+
+-- Medicines pharmacists can dispense without a doctor’s pad
+Config.PharmacyMedicines = {
+    { value = 'aspirin',         label = 'Aspirin'         },
+    { value = 'ibuprofen',       label = 'Ibuprofen'       },
+    { value = 'cough_syrup',     label = 'Cough Syrup'     },
+    { value = 'antihistamine',   label = 'Antihistamine'   },
+    { value = 'antacid',         label = 'Antacid'         },
+    { value = 'laxative',        label = 'Laxative'        }
+}
+
 Config.Ailments = {
     { value = 'muscle_strain', label = 'Muscle Strain' },
     { value = 'chronic_pain', label = 'Chronic Pain' },
