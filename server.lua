@@ -14,6 +14,48 @@ local function isValidOption(option, list)
     return false
 end
 
+RegisterCommand('prescriptions', function(source)
+    local xPlayer = ESX.GetPlayerFromId(source)
+    local citizenId = xPlayer.getIdentifier()
+
+    MySQL.query('SELECT * FROM user_prescriptions WHERE citizenid = ?', { citizenId }, function(results)
+        local active = {}
+        local now = os.time()
+
+        for _, rx in pairs(results) do
+            if tonumber(rx.expires_at) > now then
+                local minutesLeft = math.floor((rx.expires_at - now) / 60)
+                table.insert(active, {
+                    doctor = rx.doctor,
+                    ailment = rx.ailment,
+                    medication = rx.medication,
+                    instructions = rx.instructions,
+                    expires = minutesLeft
+                })
+            else
+                -- Cleanup expired prescriptions
+                MySQL.update('DELETE FROM user_prescriptions WHERE id = ?', { rx.id })
+            end
+        end
+
+        if #active == 0 then
+            TriggerClientEvent('chat:addMessage', source, {
+                color = {255, 0, 0},
+                args = {'[Prescriptions]', 'You have no active prescriptions.'}
+            })
+        else
+            local timeStr = os.date('%Y-%m-%d %H:%M', rx.expires_at)
+            TriggerClientEvent('chat:addMessage', source, {
+                color = {0,255,100},
+                args = {
+                ('[%s]'):format(timeStr),
+                ('Dr. %s | %s → %s | %s'):format(rx.doctor, rx.ailment, rx.medication, rx.instructions)
+    }
+})
+            end
+    end)
+end)
+
 RegisterNetEvent('gitcute:writeDetailedPrescription', function(targetId, ailment, medication, instructions)
     local src = source
     local xPlayer = ESX.GetPlayerFromId(src)
