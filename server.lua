@@ -1,3 +1,6 @@
+ESX = nil
+TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
+
 ESX.RegisterUsableItem('prescription_pad', function(source)
     TriggerClientEvent('gc-vitarx:openPrescriptionPad', source)
 end)

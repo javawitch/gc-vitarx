@@ -1,12 +1,15 @@
 fx_version 'cerulean'
 game 'gta5'
 
-description 'Prescription and Addiction System for ESX with ox_inventory'
-author 'Git Cute - Java'
+author 'Git Cute'
+description 'Prescription System'
 version '1.0.0'
+
+dependency 'es_extended'
 
 shared_script 'config.lua'
 shared_script 'shared/items.lua'
-client_script 'client.lua'
+
+server_script '@oxmysql/lib/MySQL.lua'  -- if you’re using oxmysql
 server_script 'server.lua'
-dependency 'ox_inventory'
+client_script 'client.lua'
