@@ -80,7 +80,8 @@ RegisterNetEvent('gitcute:writeDetailedPrescription', function(targetId, ailment
         ailment,
         medication,
         instructions,
-        expires
+        expires,
+        'written'
     }, function(rowsChanged)
         if rowsChanged > 0 then
             TriggerClientEvent('esx:showNotification', src, ('Prescription for %s → %s'):format(medication, GetPlayerName(targetId)))
@@ -139,7 +140,37 @@ ESX.RegisterServerCallback('gitcute:getPharmacistCount', function(src, cb)
       TriggerClientEvent('esx:showNotification', src, 'You picked up ' .. rx.medication)
     end)
   end)
-  
+
+  RegisterNetEvent('gitcute:fillPrescription', function(prescriptionId)
+    local src     = source
+    local xPlayer = ESX.GetPlayerFromId(src)
+    
+    -- ensure only pharmacists can fill
+    if not Config.PharmacistJobs[xPlayer.job.name] then
+        return TriggerClientEvent('esx:showNotification', src, 'You are not authorized to fill prescriptions.')
+    end
+
+    local filledAt = os.time()
+    local filler  = xPlayer.getName()
+
+    MySQL.Async.execute([[
+        UPDATE user_prescriptions
+        SET status    = 'filled',
+            filled_by = ?,
+            filled_at = ?
+        WHERE id = ? AND status = 'pending'
+    ]], {
+        filler,
+        filledAt,
+        prescriptionId
+    }, function(rowsChanged)
+        if rowsChanged > 0 then
+            TriggerClientEvent('esx:showNotification', src, 'Prescription marked as filled.')
+        else
+            TriggerClientEvent('esx:showNotification', src, 'Unable to fill: invalid ID or already filled.')
+        end
+    end)
+end)
 
 local cleanupThread
 AddEventHandler('onResourceStop', function(resourceName)
