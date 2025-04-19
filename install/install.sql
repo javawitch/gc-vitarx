@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS `user_prescriptions` (
     `ailment` VARCHAR(100) NOT NULL,
     `medication` VARCHAR(100) NOT NULL,
     `instructions` TEXT NOT NULL,
+    `expires_at` INT NOT NULL,
     `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     `status` VARCHAR(20) NOT NULL DEFAULT 'written',
     `filled_by` VARCHAR(100) NULL,

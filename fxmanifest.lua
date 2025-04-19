@@ -8,7 +8,6 @@ version '1.0.0'
 dependency 'es_extended'
 
 shared_script 'config.lua'
-shared_script 'shared/items.lua'
 
 server_script '@oxmysql/lib/MySQL.lua'  -- if you’re using oxmysql
 server_script 'server.lua'
